@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Combustion Research Lab | People</title>
+<style>
+    .pro {
+        justify-content: center;
+        flex-direction: row;
+    }
+
+    .title {
+        background-color: #343434;
+        border-radius: 20px;
+        color: white;
+        text-align: center;
+    }
+
+    .designation {
+        flex-direction: row;
+        justify-content: center;
+        border-radius: 20px;
+        background-color: whitesmoke;
+        margin-bottom: 5rem;
+    }
+
+    .card {
+        margin-top: 1rem;
+        margin-left: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<header>
+    <div class="container" id="banner" style="justify-content: center;">
+        <div class="row banner">
+            <img src="{{ url_for('static', filename='assets/logo.png')}}" width="64px" height="64px">
+            <h1 style="text-align: center;">Combustion Research Lab</h1>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <a class="navbar-brand" href="{{ url_for('index')}}">IIT Bombay</a>
+        <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
+            aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
+            <img src="{{ url_for('static', filename='assets/logo.png')}}" width="30" height="30"
+                class="d-inline-block align-top">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavId">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index')}}">Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ url_for('people')}}">People <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('research') }}">Research</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('publications') }}">Publications</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('facilities') }}">Facilities</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('interestingLinks') }}">Interesting Links</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('login')}}">Login</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+
+<div class="container">
+
+    <div class="row intro">
+        <div class="row text">
+            <h1 class="display-3">
+                <i class="fa fa-users" aria-hidden="true"></i>
+                People
+            </h1>
+            <p class="lead">
+                Welcome to this website.You can go through various pages of this homepage such as ongoing research,
+                publications and
+                facilities.If you are interested in our groups' activities and want more information,
+                you are welcome to contact through one of the various communication modes, such as snail-mail,e-mail
+                or phone.
+            </p>
+        </div>
+    </div>
+
+    {% for i in range(finalArray|length) %}
+    <div class="row pro" style="flex-direction: column;">
+        <div class="column title">
+            <h1>
+                {{ globalList[i] }}
+            </h1>
+        </div>
+        <div class="row designation">
+            {% for index in range(finalArray[i]|length) %}
+            <div class="card" style="width: 18rem;float: right;">
+                <img class="card-img-top" src="data:;base64,{{ images[i][index] }}" alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title">
+                        {{ finalArray[i][index].name }}
+                    </h4>
+                    <h5>
+                        {{ finalArray[i][index].designation }}
+                    </h5>
+                    <h6>
+                        {{ finalArray[i][index].details}}
+                    </h6>
+
+                    {{ finalArray[i][index].address }}
+                    <br><br>
+                    <a class="btn btn-primary" href="/individual/{{ finalArray[i][index].people_id }}" role="button">
+                        View More Details
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="row pro" style="flex-direction: column;">
+        <div class="column title">
+            <h1>
+                M.Tech Alumni
+            </h1>
+        </div>
+    <ul>
+    {% for item in mtech %}
+     <li class="list-group-item list-group-item-action"> {{item.name}}  </li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}

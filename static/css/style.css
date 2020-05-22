@@ -1,0 +1,21 @@
+.banner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+}
+
+.container {
+    margin-top: 1rem;
+}
+
+footer {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #343A40;
+    color: white;
+    text-align: center;
+    font-size: x-small;
+    margin-top: 4rem;
+}

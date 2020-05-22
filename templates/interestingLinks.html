@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Combustion Research Lab | Interesting Links</title>
+<style>
+    .card{
+        margin: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<header>
+    <div class="container" id="banner" style="justify-content: center;">
+        <div class="row banner">
+            <img src="{{ url_for('static', filename='assets/logo.png')}}" width="64px" height="64px">
+            <h1 style="text-align: center;">Combustion Research Lab</h1>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <a class="navbar-brand" href="{{ url_for('index')}}">IIT Bombay</a>
+        <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
+            aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
+            <img src="{{ url_for('static', filename='assets/logo.png')}}" width="30" height="30"
+                class="d-inline-block align-top">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavId">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index')}}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('people')}}">People</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('research') }}">Research</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('publications') }}">Publications</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('facilities') }}">Facilities</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ url_for('interestingLinks') }}">Interesting Links <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('login')}}">Login</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+
+    <div class="row intro">
+        <div class="row text">
+            <h1 class="display-3">
+                <i class="fa fa-link" aria-hidden="true"></i>
+                Interesting Links
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for i in range(types|length) %}
+        <div class="card" style="background-color:lightskyblue;">
+            <div class="card-body">
+            <h5 style="color: ivory;" class="card-title"> {{ types[i] }} </h5>
+            {% for item in finalArray[i] %}
+            <a href="{{ item.link }}"
+            class="list-group-item list-group-item-action">
+                {{ item.text }}
+            </a>
+            {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

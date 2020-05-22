@@ -1,0 +1,276 @@
+{% extends 'admin/master.html' %}
+
+{% block title %}
+Combustion Research Lab | Admin
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Jost&display=swap');
+
+    body {
+        background-image: url("{{ url_for('static',filename='assets/bg.jpg') }}");
+        background-repeat: no-repeat;
+        background-size: cover;
+        font-family: 'Jost', sans-serif;
+        font-size: 1rem;
+    }
+
+    .row {
+        flex-direction: row;
+    }
+
+    .card {
+        background-color: rgba(250, 250, 250, 0.75);
+    }
+
+    .column {
+        padding: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<h1 style="text-align: center;">
+    <u>STARTUP GUIDE</u>
+</h1>
+<div class="row">
+
+    <div class="column" style="width: 100%;">
+        <div class="card reminder">
+            <div class="card-body">
+                <h4 style="text-align: center;color: crimson;" class="card-title">
+                    <u>IMPORTANT REMINDERS</u>
+                </h4>
+                <ul>
+                    <li>
+                        <b style="color: crimson;">Never delete all data from admin table.</b><br>
+                    </li>
+                    <br>
+                    <li>
+                        <b style="color: crimson;">Make sure to give people_id
+                            to all members and make sure it is unique for each member. </b>
+                    </li>
+                    <br>
+                    <li>
+                        <b style="color: crimson;">While adding images in research page give the same title
+                             for images that you want to group together. </b>
+                    </li>
+                    <br>
+                    <li>
+                        <b style="color: crimson;">You cannot update any images. If you wish to do so.
+                        Then you have to first delete that image then upload the new one. </b>
+                    </li>
+                    <br>
+                    <li>
+                        <b style="color: crimson;">You can update 6 papers per request in Update Papers.
+                            Adding more would still yield result, but they will not have journal or citation details. </b>
+                    </li>
+                    <br>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="column" style="width: 50%;height: 100px;">
+        <div class="card admin">
+            <div class="card-body">
+                <h4 style="text-align: center;" class="card-title">
+                    <a href="/admin/admintable">Admin Table</a>
+                </h4>
+                <p>
+                    Add name and password here if you want to have a diffrent login credentials.<br>
+                    <b style="color: crimson;">Never delete all data from this table.</b><br>
+                    <b style="color:orangered;">Always make sure atleast one record exist.</b>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="column" style="width: 50%;">
+        <div class="card home">
+            <div class="card-body">
+                <h4 style="text-align: center;" class="card-title">
+                    <a href="/admin/homepage">Home Page</a>
+                </h4>
+                <p>
+                    Add text to show in the home screen <a href="/admin/homepage">here.</a><br>
+                    You can also add pictures to show in the slides <a href="/admin/home_upload">here.</a><br>
+                    View/Delete them in the <i style="color: orangered;">TABLE Home Page Image.</i><br>
+                    Add images using the function <i style="color: orangered;">Upload Home page Images</i>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="column" style="width: 100%;">
+        <div class="card people">
+            <div class="card-body">
+                <h4 style="text-align: center;" class="card-title">
+                    <a href="/admin/people">People Page</a>
+                </h4>
+                <p>
+                    You can add or remove members to the group here<br>
+                    There are <b style="color: crimson;">9 tables</b> and
+                    <b style="color: crimson;">2 functions</b> in this menu.<br>
+                    <b style="color: yellowgreen;">Upload Image</b> can be used to upload image of the member.<br>
+                    <b style="color: yellowgreen;">Update Papers</b> can be used to update publication details.<br>
+                </p>
+
+                <div style="border: solid 2px red;">
+                    <h4>Mandatory</h4>
+                    <hr>
+                    <ul>
+                        <li>
+                            <a href="/admin/people"><i style="color: crimson;">People (TABLE)</i></a>
+                            :- Add basic data of members here.
+                            <br>Make sure to give
+                            <i style="color: crimson;">people_id </i> to all and make sure it is
+                            <i style="color: crimson;"> unique. </i>
+                        </li>
+                    </ul>
+                </div>
+
+                <div style="border: solid 2px red;">
+                    <h4>Optional</h4>
+                    <hr>
+                    <div>
+                        <ul>
+                            <li>
+                                <a href="/admin/peopleimage"><i style="color: yellowgreen;">PeopleImage (TABLE)</i></a>
+                                :- View/Delete added images of members here.
+                            </li>
+                            <br>
+
+                            <li>
+                                <a href="/admin/contacts"><i style="color: yellowgreen;">Contacts (TABLE)</i></a>
+                                :- Add contact details of members here.
+                                <br>Make sure to give the corresponding
+                                <i style="color: crimson;">people_id</i> of the member.<br>
+                                You can add both <i style="color: crimson;">numbers and email ids</i> here
+                            </li>
+                            <br>
+
+                            <li>
+                                <a href="/admin/academics"><i style="color: yellowgreen;">Academics (TABLE)</i></a>
+                                :- Add academic details of members here.
+                                <br>Make sure to give the corresponding
+                                <i style="color: crimson;">people_id</i> of the member.<br>
+                            </li>
+                            <br>
+
+                            <li>
+                                <a href="/admin/research"><i style="color: yellowgreen;">Research (TABLE)</i></a>
+                                :- Add research interst of members here.
+                                <br>Make sure to give the corresponding
+                                <i style="color: crimson;">people_id</i> of the member.<br>
+                            </li>
+                            <br>
+
+                            <li>
+                                <a href="/admin/awards"><i style="color: yellowgreen;">Awards (TABLE)</i></a>
+                                :- Add award details of members like scholarships won, here.
+                                <br>Make sure to give the corresponding
+                                <i style="color: crimson;">people_id</i> of the member.<br>
+                            </li>
+                            <br>
+
+                            <li>
+                                <a href="/admin/positions"><i style="color: yellowgreen;">Positions (TABLE)</i></a>
+                                :- Add details of positions hold by member.
+                                <br>Make sure to give the corresponding
+                                <i style="color: crimson;">people_id</i> of the member.<br>
+                            </li>
+                            <br>
+
+                            <li>
+                                <a href="/admin/papers"><i style="color: yellowgreen;">Papers (TABLE)</i></a>
+                                :- Add publication details of members here.
+                                <br>Make sure to give the corresponding
+                                <i style="color: crimson;">people_id</i> of the member.<br>
+                            </li>
+                            <br>
+
+                            <li>
+                                <a href="/admin/mtech"><i style="color: yellowgreen;">MTech (TABLE)</i></a>
+                                :- Update MTech Alumni members here.
+                            </li>
+                            <br>
+                            
+                            <li>
+                                <a href="/admin/upload"><i style="color: yellowgreen;">Upload Image (FUNCTION)</i></a>
+                                :- Add a picture of the member here.
+                                <br>Make sure to give the corresponding
+                                <i style="color: crimson;">people_id</i> of the member.<br>
+                            </li>
+                            <br>
+
+                            <li>
+                                <a href="/admin/update"><i style="color: yellowgreen;">Update Papers (FUNCTION)</i></a>
+                                :- Update publication here. This is automated.
+                                <br>If the journal and citation details are missing. <br>
+                                Try re-running the function with the same limits
+                            </li>
+                            <br>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="column" style="width: 100%;">
+        <div class="card research">
+            <div class="card-body">
+                <h4 style="text-align: center;" class="card-title">
+                    <a href="/admin/researchpage">Research Page</a>
+                </h4>
+                <p>
+                    Add research intersets <a href="/admin/researchpage">here.</a><br>
+                    You can also add pictures and their respective headings <a href="/admin/research_upload">here.</a><br>
+                    View/Delete them in the <i style="color: orangered;">TABLE Research Image.</i><br>
+                    Add images using the function <i style="color: orangered;">Upload Research Images</i><br>
+                    <b style="color: crimson;"> While adding images give the same title for images that you want to group together</b>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="column" style="width: 50%;">
+        <div class="card facility">
+            <div class="card-body">
+                <h4 style="text-align: center;" class="card-title">
+                    <a href="#">Facilities Page</a>
+                </h4>
+                <p>
+                    Add computational facilities <a href="/admin/computationalfacilities">here.</a><br>
+                    Add experimental facilities <a href="/admin/experimentalfacilities">here.</a><br>
+                    You can also add pictures <a href="/admin/facility_upload">here.</a><br>
+                    View/Delete them in the <i style="color: orangered;">TABLE Facility Image.</i><br>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="column" style="width: 50%;">
+        <div class="card links">
+            <div class="card-body">
+                <h4 style="text-align: center;" class="card-title">
+                    <a href="#">Interesting Links Page</a>
+                </h4>
+                <p>
+                    Add types of links <a href="/admin/computationalfacilities">here.</a><br>
+                    Add links and their representative texts <a href="/admin/experimentalfacilities">here.</a><br>
+                    While adding use the <i style="color: crimson;">type_id</i> to map links to the desired type.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <footer >
+        &copy;Webpage developed by<br> <a href="https://hvkalayil.github.io">Hosea Varghese Kalayil</a>
+    </footer>
+    {% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Combustion Research Lab | Publications</title>
+{% endblock %}
+
+{% block body %}
+
+<header>
+    <div class="container" id="banner" style="justify-content: center;">
+        <div class="row banner">
+            <img src="{{ url_for('static', filename='assets/logo.png')}}" width="64px" height="64px">
+            <h1 style="text-align: center;">Combustion Research Lab</h1>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <a class="navbar-brand" href="{{ url_for('index')}}">IIT Bombay</a>
+        <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse"
+            data-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <img src="{{ url_for('static', filename='assets/logo.png')}}" width="30" height="30" class="d-inline-block align-top">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavId">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index')}}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('people')}}">People</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('research') }}">Research</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ url_for('publications') }}">Publications <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('facilities') }}">Facilities</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('interestingLinks') }}">Interesting Links</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('login')}}">Login</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<div class="jumbotron">
+    <h1 class="display-3">
+        <i class="fa fa-file-text" aria-hidden="true"></i>
+        List of all Publications</h1>
+    <hr class="my-2">
+    {% for i in range(tasks|length) %}
+    <div class="table-responsive">
+        <h1> {{ globalList[i] }} </h1>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Paper Name</th>
+                    <th scope="col">Journal</th>
+                    <th scope="col">Citations</th>
+                </tr>
+            <tbody id="scholarPapers">
+                {% for item in tasks[i] %}
+                <tr>
+                    <td>
+                        <a href="{{ item.link }}"> {{ item.name }} </a>
+                    </td>
+                    <td>{{ item.journal }}</td>
+                    <td>{{ item.citations }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </thead>
+        </table>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

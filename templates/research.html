@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Combustion Research Lab | Research</title>
+<style>
+    .inside-text{
+        text-align: center;
+        padding: 2rem;
+        margin: 2rem;
+        border-top: solid 2px grey;
+        border-bottom: solid 2px grey;
+    }
+    .carousel-item {
+        height: 25rem;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .carousel-item {
+            height: 10rem;
+        }            
+    }
+
+    @media only screen and (max-width: 800px) {
+        .carousel-item {
+            height: 12rem;
+        }
+    }  
+</style>
+{% endblock %}
+{% block body %}
+<header>
+    <div class="container" id="banner" style="justify-content: center;">
+        <div class="row banner">
+            <img src="{{ url_for('static', filename='assets/logo.png')}}" width="64px" height="64px">
+            <h1 style="text-align: center;">Combustion Research Lab</h1>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <a class="navbar-brand" href="{{ url_for('index')}}">IIT Bombay</a>
+        <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse"
+            data-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <img src="{{ url_for('static', filename='assets/logo.png')}}" width="30" height="30" class="d-inline-block align-top">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavId">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index')}}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('people')}}">People</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ url_for('research') }}">Research <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('publications') }}">Publications</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('facilities') }}">Facilities</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('interestingLinks') }}">Interesting Links</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('login')}}">Login</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+
+    <div class="row">
+        <div class="row text">
+            <h1 class="display-3">
+                <i class="fa fa-list" aria-hidden="true"></i>
+                Research Fields
+            </h1>
+            <p class="lead">
+                <ul>
+                    {% for task in tasks %}
+                    <li class="list-group-item list-group-item-action"> {{ task.interests }} </li>
+                    {% endfor %}
+                </ul>
+
+                <div class="inside-text">
+                These are some of the representative PhD research topics.
+                Only those students who are interested in pursuing their Ph.D. should apply for these topics.
+                For more information, you can directly contact me at sudar@aero.iitb.ac.in or sudar4@gmail.com.
+                <br>
+                For more information, links to the research papers are provided in this page.
+                However, if you are not able to get the papers from these sources (such as 
+                <a href="http://www.sciencedirect.com/">Science-Direct</a>, 
+                <a href="http://www.scopus.com/">Scopus</a> and 
+                <a href="http://portal.isiknowledge.com/portal.cgi?SID=3AFN2MHfjnHP5Gcl832">Web of Science</a>) 
+                you can contact me through email.The references to some of the interesting papers are available either
+                on this page or you can refer to the 
+                <a href="{{ url_for('publications') }}">List of Publications page.</a>
+                </div>
+            </p>
+        </div>
+    </div>
+
+    <div class="row allgroups">
+        {% for j in range(finalArray|length) %}
+        <div class="column group">
+            <h4 
+            style="text-align: center;background-color: #343434;
+            color: white;padding: 0.5rem;border-radius: 10px;">
+                {{ finalArray[j] }}
+            </h4>
+            <div style="border: 2px solid #343434;" id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                    {% for i in range(1,finalimgArray[j]|length) %}
+                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ i }}"></li>
+                    {% endfor %}
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img class="d-block w-100" src="data:;base64,{{ finalimgArray[j][0] }}" alt="{{ name[j][0] }}">
+                    </div>
+                    {% for i in range(1,finalimgArray[j]|length) %}
+                    <div class="carousel-item">
+                        <img class="d-block w-100" src="data:;base64,{{ finalimgArray[j][i] }}" alt="{{ name[j][i] }}"
+                        style="width:max-content;height: max-content;">
+                    </div>
+                    {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
