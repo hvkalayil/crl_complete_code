@@ -27,7 +27,8 @@ crossorigin="anonymous"></script>
     {% for i in range(table|length) %}
     <div class="column" style="margin: 0.25rem; border:solid 5px grey; padding: 0.25rem;">
         <h6> {{ table[i].name }} </h6>
-        <img src="data:;base64,{{ image[i] }}" alt="Could'nt load image" width="200px">
+        <img src="{{ url_for('static',filename='uploads/facility/' + table[i].name) }}" 
+        alt="Could'nt load image" width="200px">
     </div>
     {% endfor %}
 </div>

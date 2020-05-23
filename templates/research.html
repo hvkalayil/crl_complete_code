@@ -105,40 +105,21 @@
     </div>
 
     <div class="row allgroups">
-        {% for j in range(finalArray|length) %}
-        <div class="column group">
+        {% for i in range(finalArray|length) %}
+        <div class="column group" style="margin: 0.75rem;">
             <h4 
             style="text-align: center;background-color: #343434;
             color: white;padding: 0.5rem;border-radius: 10px;">
-                {{ finalArray[j] }}
+                {{ finalArray[i] }}
             </h4>
-            <div style="border: 2px solid #343434;" id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                <ol class="carousel-indicators">
-                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                    {% for i in range(1,finalimgArray[j]|length) %}
-                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ i }}"></li>
-                    {% endfor %}
-                </ol>
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img class="d-block w-100" src="data:;base64,{{ finalimgArray[j][0] }}" alt="{{ name[j][0] }}">
-                    </div>
-                    {% for i in range(1,finalimgArray[j]|length) %}
-                    <div class="carousel-item">
-                        <img class="d-block w-100" src="data:;base64,{{ finalimgArray[j][i] }}" alt="{{ name[j][i] }}"
-                        style="width:max-content;height: max-content;">
-                    </div>
-                    {% endfor %}
+            <div class="row" style="justify-content: center; flex-direction: row;">
+            {% for j in range(finalimgArray[i]|length) %}
+                <div class="column" style="border:solid 2px grey;">
+                <img src="{{ url_for('static',filename='uploads/research/'+finalimgArray[i][j].name)}}" 
+                alt="Could'nt load image">
                 </div>
-                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
-            </div>
+            {% endfor %}
+        </div>
         </div>
         {% endfor %}
     </div>

@@ -18,21 +18,23 @@ crossorigin="anonymous"></script>
 <div class="row" style="flex-direction: row; justify-content: center;">
 {% for i in range(tasks|length) %}
 <div class="column" style="width:300px;margin: 0.5rem;padding: 0.5rem;border: solid 2px grey;">
+
 <form action="/admin/upload" method="POST" enctype="multipart/form-data">
-    <img  
-    src="data:;base64,{{ pics[i] }}" 
+    {% if path[i] is defined %}
+    <img    
+    src="{{ url_for('static',filename='uploads/people/' + path[i]) }}" 
     width="100px"
     height="100px"
     alt="No image Uploaded">
-    <h3>{{ tasks[i].name }}</h3>
-    {% if pics[i] is defined %}
-    <h4>{{ names[i] }} is currently uploaded</h4>
+    <h6>{{ path[i] }}</h6>
     {% endif %}
-    <input type="file" name="image">
+    <h3>{{ tasks[i].name }}</h3>
+    <input type="file" name="file">
     <hr>
     <input type="submit" value="Upload">
     <input type="text" name="peopleId" value="{{ tasks[i].people_id }}" style="visibility: hidden;">
 </form>
+
 </div>
 {% endfor %}
 </div>

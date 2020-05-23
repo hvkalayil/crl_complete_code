@@ -79,7 +79,7 @@
         <div class="column card">
             <div class="card" style="width: 18rem;">
                 <img class="card-img-top" 
-                src="data:;base64,{{ image }}" 
+                src=" {{ url_for('static',filename='uploads/people/' + image.name) }} "
                 alt="Card image cap">
                 <div class="card-body">
                     {% for item in people %}

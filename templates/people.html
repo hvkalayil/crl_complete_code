@@ -78,23 +78,8 @@
 
 <div class="container">
 
-    <div class="row intro">
-        <div class="row text">
-            <h1 class="display-3">
-                <i class="fa fa-users" aria-hidden="true"></i>
-                People
-            </h1>
-            <p class="lead">
-                Welcome to this website.You can go through various pages of this homepage such as ongoing research,
-                publications and
-                facilities.If you are interested in our groups' activities and want more information,
-                you are welcome to contact through one of the various communication modes, such as snail-mail,e-mail
-                or phone.
-            </p>
-        </div>
-    </div>
-
     {% for i in range(finalArray|length) %}
+    {% if finalArray[i][0] is defined %}
     <div class="row pro" style="flex-direction: column;">
         <div class="column title">
             <h1>
@@ -104,7 +89,11 @@
         <div class="row designation">
             {% for index in range(finalArray[i]|length) %}
             <div class="card" style="width: 18rem;float: right;">
-                <img class="card-img-top" src="data:;base64,{{ images[i][index] }}" alt="Card image cap">
+                {% if images[i][index] != '#' %}
+                <img class="card-img-top" 
+                src="{{ url_for('static', filename='uploads/people/' + images[i][index].name) }}" 
+                alt="Card image cap">
+                {% endif %}
                 <div class="card-body">
                     <h4 class="card-title">
                         {{ finalArray[i][index].name }}
@@ -126,6 +115,7 @@
             {% endfor %}
         </div>
     </div>
+    {% endif %}
     {% endfor %}
 
     <div class="row pro" style="flex-direction: column;">

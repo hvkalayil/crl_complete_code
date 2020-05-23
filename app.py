@@ -1,18 +1,27 @@
-from flask import Flask, render_template, url_for, request, redirect , session , send_file
+from flask import Flask, render_template, url_for, request, redirect , session , send_file ,flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin, BaseView ,expose
 from flask_admin.menu import MenuLink
 from flask_admin.contrib.sqla import ModelView
 from flask_login import UserMixin , LoginManager , current_user , login_user
 from base64 import b64encode
+from werkzeug.utils import secure_filename
+from os.path import join, dirname, realpath
 import urllib.error ,urllib.parse , urllib.request
 import json
 import scholarly
+import os
 
 # APP CONFIG, DB , ADMIN , LOGIN--------------------------------------------
+
 app = Flask(__name__)
+
+UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static/uploads')
+ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///iit.db'
 app.config['SECRET_KEY'] = 'crladmin'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db = SQLAlchemy(app)
 
 login = LoginManager(app)
@@ -21,6 +30,104 @@ def load_user(user_id):
     return adminTable.query.get(user_id)
 # ----------------------------------------------------------------------------
 
+#IMAGE UPLOADS----------------------------------------------------------------
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/admin/home_up', methods=['POST'])
+def home_upload():
+    file = request.files['file']
+    if file.filename == '':
+        return 'Select a file first.<br><a href=\"/admin/home_upload\">Go Back</a>'
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        path = app.config['UPLOAD_FOLDER'] + '/home'
+        file.save(os.path.join(path, filename))
+        task = HomePageImage(name=filename)
+        try:
+            db.session.add(task)
+            db.session.commit()
+        except:
+            return '''Couldnot add filename to database.<br>
+            Try again with the same file, if it was uploaded it will be overwritten.<br>
+            <a href=\"/admin/home_upload\">Go Back</a>'''
+
+        return '''
+        Image Upload Sucessful<br>
+        The image will be saved in static/uploads/home
+        <a href=/admin/home_upload>Go Back</a>'''
+
+@app.route('/admin/upload', methods=['POST'])
+def people_upload():
+    file = request.files['file']
+    pid = request.form['peopleId']
+    if file.filename == '':
+        return 'Select a file first.<br><a href=\"/admin/upload\">Go Back</a>'
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        path = app.config['UPLOAD_FOLDER'] + '/people'
+        file.save(os.path.join(path, filename))
+        task = PeopleImage(people_id=pid,name=filename)
+        try:
+            db.session.add(task)
+            db.session.commit()
+        except:
+            return '''Couldnot add filename to database.<br>
+            Try again with the same file, if it was uploaded it will be overwritten.
+            <br><a href=\"/admin/upload\">Go Back</a>'''
+
+        return '''
+        Image Upload Sucessful<br>
+        The image will be saved in static/uploads/people
+        <a href=/admin/upload>Go Back</a>'''
+
+@app.route('/admin/research_up', methods=['POST'])
+def research_upload():
+    file = request.files['file']
+    title = request.form['title']
+    if file.filename == '':
+        return 'Select a file first.<br><a href=\"/admin/research_upload\">Go Back</a>'
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        path = app.config['UPLOAD_FOLDER'] + '/research'
+        file.save(os.path.join(path, filename))
+        task = ResearchImage(titles=title,name=filename)
+        try:
+            db.session.add(task)
+            db.session.commit()
+        except:
+            return '''Couldnot add filename to database.<br>
+            Try again with the same file, if it was uploaded it will be overwritten.
+            <br><a href=\"/admin/research_upload\">Go Back</a>'''
+        return '''
+        Image Upload Sucessful<br>
+        The image will be saved in static/uploads/research
+        <a href=/admin/research_upload>Go Back</a>'''
+
+@app.route('/admin/facility_up', methods=['POST'])
+def facility_upload():
+    file = request.files['file']
+    if file.filename == '':
+        return 'Select a file first.<br><a href=\"/admin/facility_upload\">Go Back</a>'
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        path = app.config['UPLOAD_FOLDER'] + '/facility'
+        file.save(os.path.join(path, filename))
+        task = FacilityImage(name=filename)
+        try:
+            db.session.add(task)
+            db.session.commit()
+        except:
+            return '''Couldnot add filename to database.<br>
+            Try again with the same file, if it was uploaded it will be overwritten.
+            <br><a href=\"/admin/facility_upload\">Go Back</a>'''
+        return '''
+        Image Upload Sucessful<br>
+        The image will be saved in static/uploads/facility
+        <a href=/admin/facility_upload>Go Back</a>'''
+
+# ----------------------------------------------------------------------------
 
 # DB TABLES---------------------------------------------------------------------
 
@@ -39,13 +146,11 @@ class HomePage(db.Model):
 class HomePageImage(db.Model):
     id = db.Column(db.Integer , primary_key=True)
     name = db.Column(db.String(50))
-    data = db.Column(db.LargeBinary)
 
 class PeopleImage(db.Model):
     id = db.Column(db.Integer , primary_key=True)
     people_id = db.Column(db.Integer)
     name = db.Column(db.String(50))
-    data = db.Column(db.LargeBinary)
 
 class People(db.Model):
     __tablename__ = 'people'
@@ -111,7 +216,6 @@ class ResearchImage(db.Model):
     id = db.Column(db.Integer , primary_key=True)
     titles = db.Column(db.String(100))
     name = db.Column(db.String(50))
-    data = db.Column(db.LargeBinary)
 
 class ComputationalFacilities(db.Model):
     id = db.Column(db.Integer , primary_key=True)
@@ -124,7 +228,6 @@ class ExperimentalFacilities(db.Model):
 class FacilityImage(db.Model):
     id = db.Column(db.Integer , primary_key=True)
     name = db.Column(db.String(30))
-    data = db.Column(db.LargeBinary)
 
 class TypesOfLinks(db.Model):
     id = db.Column(db.Integer , primary_key=True)
@@ -172,63 +275,6 @@ def logout():
     db.session.commit()
     session.clear()
     return redirect('/login')   
-
-@app.route('/admin/upload',methods=['POST'])
-def upload():
-    if request.method == 'POST':
-        id = request.form['peopleId']
-        file = request.files['image']
-        tsk = People.query.filter_by(people_id=id).first().name
-        
-        if PeopleImage.query.filter_by(people_id=id).first() is None:
-            uploadTask = PeopleImage(people_id=id, name=tsk , data=file.read())
-            try:
-                db.session.add(uploadTask)
-                db.session.commit()
-                return 'Image Upload Successfull.<br><a href=\"/admin/peopleimage\">View here</a><br><a href=\"/admin/upload\">Add Another</a>'
-            except:
-                return 'ERROR with file. Try another file or contact hoseakalayil@gmail.com<br><a href=\"/admin/upload\">Go back</a>'
-        else:
-            return 'This id already have a picture. Delete it and then Upload. <br><a href=\"/admin/upload\">Go back</a>'
-
-@app.route('/admin/research_up',methods=['POST'])
-def research_up():
-    if request.method == 'POST':
-        title = request.form['title']
-        image = request.files['file']
-        uploadTask = ResearchImage(titles=title,name=image.filename,data=image.read())
-        try:
-            db.session.add(uploadTask)
-            db.session.commit()
-            return 'Image Upload Successfull.<br><a href=\"/admin/researchimage\">View here</a><br><a href=\"/admin/research_upload\">Add Another</a>'
-        except:
-            return 'ERROR with file. Try another file or contact hoseakalayil@gmail.com<br><a href=\"/admin/research_upload\">Go back</a>'
-
-@app.route('/admin/home_up',methods=['POST'])
-def home_up():
-    if request.method == 'POST':
-        title = request.form['title']
-        image = request.files['file']
-        uploadTask = HomePageImage(name=title,data=image.read())
-        try:
-            db.session.add(uploadTask)
-            db.session.commit()
-            return 'Image Upload Successfull.<br><a href=\"/admin/homepageimage\">View here</a><br><a href=\"/admin/home_upload\">Add Another</a>'
-        except:
-            return 'ERROR with file. Try another file or contact hoseakalayil@gmail.com<br><a href=\"/admin/home_upload\">Go back</a>'
-
-@app.route('/admin/facilty_up',methods=['POST'])
-def facility_up():
-    if request.method == 'POST':
-        image = request.files['file']
-        title = image.filename
-        uploadTask = FacilityImage(name=title,data=image.read())
-        try:
-            db.session.add(uploadTask)
-            db.session.commit()
-            return 'Image Upload Successfull.<br><a href=\"/admin/facilityimage\">View here</a><br><a href=\"/admin/facility_upload\">Add Another</a>'
-        except:
-            return 'ERROR with file. Try another file or contact hoseakalayil@gmail.com<br><a href=\"/admin/facility_upload\">Go back</a>'
 
 @app.route('/updateCheck/<int:pid>',methods=['POST'])
 def updateCheck(pid):
@@ -336,15 +382,13 @@ class UploadPicture(BaseView):
     def index(self):
         tasks = People.query.all()
         images = PeopleImage.query.all()
-        names = []
         pics = []
         for task in tasks:
             for img in images:
                 if img.people_id == task.people_id:
-                    names.append(img.name)
-                    pics.append(b64encode(img.data).decode('utf-8'))
+                    pics.append(img.name)
                     break
-        return self.render('admin/upload.html',tasks=tasks,names=names,pics=pics)
+        return self.render('admin/upload.html',tasks=tasks,path=pics)
 
 class UploadResearchPicture(BaseView):
     def is_accessible(self):
@@ -366,7 +410,7 @@ class UploadResearchPicture(BaseView):
                 for i in images:
                     if img.titles == i.titles:
                         subArray = i.titles
-                        imgsubArray.append(b64encode(i.data).decode('utf-8'))
+                        imgsubArray.append(i)
                 finalArray.append(subArray)
                 finalimgArray.append(imgsubArray)
                 subArray = []
@@ -382,10 +426,7 @@ class UploadHomepagePicture(BaseView):
     @expose('/')
     def index(self):
         table = HomePageImage.query.all()
-        images = []
-        for item in table:
-            images.append(b64encode(item.data).decode('utf-8'))
-        return self.render('admin/home_upload.html',table=table,image=images)
+        return self.render('admin/home_upload.html',table=table)
 
 class UploadFacilityPicture(BaseView):
     def is_accessible(self):
@@ -394,10 +435,7 @@ class UploadFacilityPicture(BaseView):
     @expose('/')
     def index(self):
         table = FacilityImage.query.all()
-        images = []
-        for item in table:
-            images.append(b64encode(item.data).decode('utf-8'))
-        return self.render('admin/facility_upload.html',table=table,image=images)
+        return self.render('admin/facility_upload.html',table=table)
 
 class UpdatePapers(BaseView):
     def is_accessible(self):
@@ -453,7 +491,7 @@ admin.add_views(
 
     RestrictModelView(ComputationalFacilities,db.session,category='Facilities Page'),
     RestrictModelView(ExperimentalFacilities,db.session,category='Facilities Page'),
-    UploadResearchPicture(name='Upload Facility Image' , endpoint='facility_upload' , category='Facilities Page'),
+    UploadFacilityPicture(name='Upload Facility Image' , endpoint='facility_upload' , category='Facilities Page'),
     ImageModelView(FacilityImage,db.session , category='Facilities Page'),
 
     RestrictModelView(TypesOfLinks,db.session,category='Interesting Links Page'),
@@ -478,13 +516,7 @@ def default():
 def index():
     tasks = HomePage.query.get(1)
     table = HomePageImage.query.all()
-    images = []
-    names = []
-    for item in table:
-        images.append(b64encode(item.data).decode('utf-8'))
-        names.append(item.name)
-
-    return render_template('index.html',tasks=tasks,names=names,images=images)
+    return render_template('index.html',tasks=tasks,images=table)
 
 @app.route('/people')
 def people():
@@ -504,10 +536,11 @@ def people():
             if item == man.designation:
                 pic = PeopleImage.query.filter_by(people_id=man.people_id).first()
                 subArray.append(man)
-                try:
-                    subimgArray.append(b64encode(pic.data).decode('utf-8'))
-                except:
+                if pic is None:
                     subimgArray.append('#')
+                else:
+                    subimgArray.append(pic)
+                
         finalArray.append(subArray)
         images.append(subimgArray)
         subArray = []
@@ -519,11 +552,6 @@ def people():
 def individual(pid):
 
     table = PeopleImage.query.filter_by(people_id=pid).first()
-    try:
-        image = b64encode(table.data).decode('utf-8')
-    except:
-        image = ''
-
     ctitle = []
     clink = []
     pubs = []
@@ -545,7 +573,7 @@ def individual(pid):
             pubs.append(item)
 
     return render_template('individual.html',
-    people=people,image=image,
+    people=people,image=table,
     contacts=contacts,
     academics=academics,research=research,awards=awards,positions=positions,
     pubs=pubs,ctitle=ctitle,clink=clink)
@@ -555,12 +583,8 @@ def research():
     tasks = ResearchPage.query.all()
     images = ResearchImage.query.all()
     globalArray = []
-    subArray = ''
     imgsubArray = []
-    namesubArray = []
-    finalArray = []
     finalimgArray = []
-    finalnameArray = []
     for img in images:
         if img.titles in globalArray:
             continue
@@ -568,18 +592,12 @@ def research():
             globalArray.append(img.titles)
             for i in images:
                 if img.titles == i.titles:
-                    subArray = i.titles
-                    imgsubArray.append(b64encode(i.data).decode('utf-8'))
-                    namesubArray.append(i.name)
-            finalArray.append(subArray)
+                    imgsubArray.append(i)
             finalimgArray.append(imgsubArray)
-            finalnameArray.append(namesubArray)
-            subArray = []
             imgsubArray = []
-            namesubArray = []
 
-    return render_template('research.html',tasks=tasks,name=finalnameArray,
-    finalArray=finalArray,finalimgArray=finalimgArray)
+    return render_template('research.html',tasks=tasks,
+    finalArray=globalArray,finalimgArray=finalimgArray)
 
 @app.route('/publications')
 def publications():
@@ -610,7 +628,8 @@ def publications():
 def facilities():
     comp = ComputationalFacilities.query.all()
     exp = ExperimentalFacilities.query.all()
-    return render_template('facilities.html',comp=comp,exp=exp)
+    images = FacilityImage.query.all()
+    return render_template('facilities.html',comp=comp,exp=exp,images=images)
     
 @app.route('/interestingLinks')
 def interestingLinks():

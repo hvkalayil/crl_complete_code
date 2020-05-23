@@ -32,7 +32,8 @@ crossorigin="anonymous"></script>
     <div class="row" style="justify-content: center;">
         {% for img in finalimgArray[i] %}
         <div class="column">
-            <img src="data:;base64,{{ img }}" alt="Could'nt load image" width="250px">
+            <img src="{{ url_for('static',filename='uploads/research/' + img.name) }}" 
+            alt="Could'nt load image" width="250px">
         </div>
         {% endfor %}
     </div>

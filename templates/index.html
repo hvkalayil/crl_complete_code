@@ -8,10 +8,6 @@
         text-align: justify;
     }
 
-    .carousel-item {
-        height: 25rem;
-    }
-
     @media only screen and (max-width: 600px) {
         .carousel-item {
             height: 10rem;
@@ -72,6 +68,7 @@
 
 <div class="container">
 
+    {% if images[0] is defined %}
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
             <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -81,11 +78,17 @@
         </ol>
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img class="d-block w-100" src="data:;base64,{{ images[0] }}" alt="{{ names[0] }}">
+                <img class="d-block w-100" 
+                src="{{ url_for('static',filename='uploads/home/' + images[0].name) }}" 
+                alt="{{ images[0].name }}"
+                height="400rem">
             </div>
             {% for i in range(1,images|length) %}
             <div class="carousel-item">
-                <img class="d-block w-100" src="data:;base64,{{ images[i] }}" alt="{{ names[i] }}">
+                <img class="d-block w-100"
+                 src="{{ url_for('static',filename='uploads/home/' + images[i].name) }}"
+                 alt="{{ images[i].name }}"
+                 height="400rem">
             </div>
             {% endfor %}
         </div>
@@ -98,6 +101,7 @@
             <span class="sr-only">Next</span>
         </a>
     </div>
+    {% endif %}
 
     <div class="row">
         <div class="row text">
